@@ -955,41 +955,26 @@ color: #fff;
         }
         
         // 添加触摸滑动支持
-let startX = 0;
-let touchTarget = null;
-let isDragging = false;
-
-document.addEventListener("touchstart", e => {
-  startX = e.touches[0].clientX;
-  touchTarget = e.target.closest('.content');
-  isDragging = true;
-}, { passive: false });
-
-document.addEventListener("touchmove", e => {
-  if (!isDragging) return;
-
-  const currentX = e.touches[0].clientX;
-  const deltaX = currentX - startX;
-
-  const threshold = 50;
-
-  if (deltaX < -threshold) {
-    e.preventDefault(); // ❌ 阻止浏览器左滑默认行为
-  }
-}, { passive: false });
-
-document.addEventListener("touchend", e => {
-  const endX = e.changedTouches[0].clientX;
-  const deltaX = endX - startX;
-
-  const threshold = 50;
-
-  if (deltaX > threshold) {
-    prev(); // ✅ 右滑触发上一页
-  }
-
-  isDragging = false;
-});
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.body.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        document.body.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            const diff = touchStartX - touchEndX;
+            
+            if (diff < -50) {
+                // 向右滑动 - 上一页
+                prevSlide();
+            }
+        }
         
         // 添加键盘导航
         document.addEventListener('keydown', e => {
