@@ -27,6 +27,12 @@
             position: relative;
             touch-action: pan-y;
         }
+
+.slide {
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+}
+
         
         /* 幻灯片容器 */
         .slides-container {
@@ -321,6 +327,22 @@ color: #fff;
     </style>
 </head>
 <body>
+<div id="loader" style="
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #111;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  z-index: 9999;
+">
+  加载中，请稍候...
+</div>
+
     <!-- 进度条 -->
     <div class="progress-container">
         <div class="progress-bar" id="progress"></div>
@@ -800,6 +822,14 @@ color: #fff;
     </div>
     
     <script>
+
+window.addEventListener("load", () => {
+    document.getElementById("loader").style.display = "none";
+    document.querySelectorAll(".slide").forEach(el => {
+      el.style.opacity = 1;
+    });
+  });
+
         // 禁止复制和截图功能
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
@@ -877,10 +907,7 @@ color: #fff;
         function handleSwipe() {
             const diff = touchStartX - touchEndX;
             
-            if (diff > 50) {
-                // 向左滑动 - 下一页
-                nextSlide();
-            } else if (diff < -50) {
+            if (diff < -50) {
                 // 向右滑动 - 上一页
                 prevSlide();
             }
