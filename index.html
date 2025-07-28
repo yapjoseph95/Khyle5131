@@ -31,49 +31,37 @@
 /* From Uiverse.io by JulioCodesSM */ 
 /* From uiverse.io by @JulioCodesSM */
 .loader {
- width: 50px;
- height: 50px;
- position: relative;
- transform: translateX(-25px);
- /* Compensating for the left of 50px in the keyframe. */
+  width: 50px;
+  height: 50px;
+  position: relative;
+  transform: translateX(-25px);
 }
 
 .loader::before,
 .loader::after {
- content: '';
- position: absolute;
- width: inherit;
- height: inherit;
- border-radius: 50%;
- mix-blend-mode: multiply;
- animation: rotate9 1s infinite cubic-bezier(0.77, 0, 0.175, 1);
+  content: '';
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  border-radius: 50%;
+  mix-blend-mode: multiply;
+  animation: rotate9 1s infinite cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 .loader::before {
- background-color: #fc3f9e;
+  background-color: #fc3f9e;
 }
 
 .loader::after {
- background-color: #50e8f3;
- animation-delay: .5s;
+  background-color: #50e8f3;
+  animation-delay: .5s;
 }
 
 @keyframes rotate9 {
- 0%,100% {
-  left: 50px;
- }
-
- 25% {
-  transform: scale(.3);
- }
-
- 50% {
-  left: 0;
- }
-
- 75% {
-  transform: scale(1);
- }
+  0%,100% { left: 50px; }
+  25% { transform: scale(.3); }
+  50% { left: 0; }
+  75% { transform: scale(1); }
 }
 
 
@@ -376,9 +364,21 @@ color: #fff;
     </style>
 </head>
 <body>
-<div class="loader"></div>
-  加载中，请稍候...
+<!-- 加载遮罩层 -->
+<div id="loading-screen" style="
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+">
+  <div class="loader"></div>
 </div>
+
 
     <!-- 进度条 -->
     <div class="progress-container">
@@ -860,12 +860,15 @@ color: #fff;
     
     <script>
 
-window.addEventListener("load", () => {
-    document.getElementById("loader").style.display = "none";
-    document.querySelectorAll(".slide").forEach(el => {
-      el.style.opacity = 1;
-    });
+<script>
+  window.addEventListener('load', function () {
+    const loader = document.getElementById('loading-screen');
+    loader.style.opacity = 0;
+    loader.style.pointerEvents = 'none';
+    setTimeout(() => loader.style.display = 'none', 500); // 淡出完才彻底隐藏
   });
+</script>
+
 
         // 禁止复制和截图功能
         document.addEventListener('contextmenu', function(e) {
