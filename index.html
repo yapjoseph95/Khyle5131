@@ -955,26 +955,35 @@ color: #fff;
         }
         
         // 添加触摸滑动支持
-        let touchStartX = 0;
-        let touchEndX = 0;
-        
-        document.body.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-        });
-        
-        document.body.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        });
-        
-        function handleSwipe() {
-            const diff = touchStartX - touchEndX;
-            
-            if (diff < -50) {
-                // 向右滑动 - 上一页
-                prevSlide();
-            }
-        }
+        let startX = 0;
+let touchTarget = null;
+
+document.addEventListener("touchstart", e => {
+  startX = e.touches[0].clientX;
+  touchTarget = e.target.closest('.content'); // 判断是不是在 .content 区域
+});
+
+document.addEventListener("touchend", e => {
+  const endX = e.changedTouches[0].clientX;
+  const deltaX = endX - startX;
+
+  // 判断是否是在 .content 内滑动
+  const inContent = !!touchTarget;
+
+  // 设置滑动触发阈值
+  const threshold = inContent ? 80 : 50;
+
+  // 禁止左滑（无论在哪）不做任何动作
+  if (deltaX < -threshold) {
+    return; // 禁止 left swipe
+  }
+
+  // 允许右滑翻页（但在 .content 里滑幅要更大才触发）
+  if (deltaX > threshold) {
+    prev();
+  }
+});
+
         
         // 添加键盘导航
         document.addEventListener('keydown', e => {
