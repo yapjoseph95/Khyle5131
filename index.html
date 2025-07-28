@@ -28,6 +28,29 @@
             touch-action: pan-y;
         }
 
+#loading-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 2s ease, transform 2s ease;
+}
+
+#loading-screen.hide {
+  opacity: 0;
+  transform: scale(1.2); /* 👈 放大消失 */
+}
+
+
+
 .loader {
   display: block;
   --height-of-loader: 4px;
@@ -363,24 +386,12 @@ color: #fff;
     </style>
 </head>
 <body>
-<!-- 加载遮罩层 -->
-<div id="loading-screen" style="
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: #000;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  transition: opacity 2s ease;
-  opacity: 1;
-">
+
+<div id="loading-screen">
   <div class="loader"></div>
   <div style="color: white; font-size: 14px; margin-top: 16px;">加载中</div>
 </div>
+
 
 
     <!-- 进度条 -->
@@ -863,22 +874,20 @@ color: #fff;
     
     <script>
 
-  const startTime = performance.now(); // 页面开始加载时记录时间
+  const startTime = performance.now();
 
   window.addEventListener("load", () => {
     const loader = document.getElementById("loading-screen");
     const elapsed = performance.now() - startTime;
-    const minDisplay = 2000; // 最少显示 2 秒
-
+    const minDisplay = 2000;
     const delay = Math.max(0, minDisplay - elapsed);
 
     setTimeout(() => {
-      loader.style.opacity = 0;
+      loader.classList.add("hide"); // 开始放大 + 淡出
 
-      // 动画淡出完成后彻底隐藏
       setTimeout(() => {
-        loader.style.display = "none";
-      }, 500); // 淡出动画也是 2 秒
+        loader.style.display = "none"; // 彻底移除
+      }, 2000);
     }, delay);
   });
 
